@@ -1,19 +1,53 @@
 <!doctype html>
 <html lang="de">
-    <head>
-        <meta charset="UTF-8" />
-        <title>Note App</title>
-        <script
-            src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.3/handlebars.min.js"
-            integrity="sha256-/PJBs6QWvXijOFIX04kZpLb6ZtSQckdOIavLWKKOgXU="
-            crossorigin="anonymous"
-            defer
-        ></script>
-        <script src="scripts/index.js" type="module"></script>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Note App</title>
 
-        <link rel="stylesheet" href="styles/index.css" />
-    </head>
-    <body>
-        <h1>Note App</h1>
-    </body>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.3/handlebars.min.js"
+      integrity="sha256-/PJBs6QWvXijOFIX04kZpLb6ZtSQckdOIavLWKKOgXU="
+      crossorigin="anonymous"
+    ></script>
+
+    <script src="scripts/index.js"></script>
+
+    <!-- Handlebar template for note list items -->
+    <script id="note-template" type="text/x-handlebars-template">
+      {{#each notes}}
+        <li class="note-list__item" data-note-id="{{id}}">
+          <div class="note-list__item-title">
+            <h2 class="note-list__item-title-text">{{title}}</h2>
+          </div>
+          <div class="note-list__item-text">
+            <p class="note-list__item-text-text">{{text}}</p>
+          </div>
+          <div class="note-list__item-meta">
+            <span class="note-list__item-due-date">Due: {{dueDate}}</span>
+            <span class="note-list__item-completed">Completed:
+              {{completed}}</span>
+            <span class="note-list__item-importance">Importance:
+              {{importance}}</span>
+          </div>
+        </li>
+      {{/each}}
+    </script>
+
+    <link rel="stylesheet" href="styles/index.css" />
+  </head>
+  <body>
+    <h1>Note App</h1>
+    <div class="top-bar">
+      <button class="button-add">Add new TODO</button>
+      <button class="button-style">Change Style</button>
+    </div>
+    <div class="sort-filter-buttons">
+      <button class="button-sort-name">Name</button>
+      <button class="button-sort-due-date">By due date</button>
+      <button class="button-sort-creation-date">By creation date</button>
+      <button class="button-sort-importance">By importance</button>
+      <button class="button-filter">Filter by Status</button>
+    </div>
+    <ul class="note-list__ul"></ul>
+  </body>
 </html>

@@ -13,6 +13,32 @@ const notes = [
 document.addEventListener("DOMContentLoaded", () => {
   const source = document.getElementById("note-template").innerHTML;
   const template = Handlebars.compile(source);
-  const html = template({ notes });
-  document.querySelector(".note-list__ul").innerHTML = html;
+  const noteList = document.querySelector(".note-list__ul");
+
+  const renderNotes = (filterCompleted = false) => {
+    const filteredNotes = filterCompleted 
+      ? notes.filter(note => !note.completed)
+      : notes;
+    
+    const html = template({ notes: filteredNotes });
+    noteList.innerHTML = html;
+  };
+
+  const filterButton = document.querySelector(".button-filter");
+  let filterCompleted = false;
+
+  filterButton.addEventListener("click", () => {
+    filterCompleted = !filterCompleted;
+
+    if (filterCompleted) {
+      filterButton.classList.add("button-filter-bold");
+    } else {
+      filterButton.classList.remove("button-filter-bold");
+    }
+
+    renderNotes(filterCompleted);
+  });
+
+  // Initial render
+  renderNotes(filterCompleted);
 });

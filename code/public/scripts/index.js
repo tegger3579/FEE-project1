@@ -27,7 +27,35 @@ document.addEventListener("DOMContentLoaded", () => {
   const filterButton = document.querySelector(".button-filter");
   let filterCompleted = false;
 
-  filterButton.addEventListener("click", () => {
+  const styleButton = document.querySelector(".button-style");
+  let isAlternativeStyle = false;
+
+  const applyStyles = () => {
+    const buttons = document.querySelectorAll("button");
+    const noteItems = document.querySelectorAll(".note-list__item");
+    
+    buttons.forEach(button => {
+      if (isAlternativeStyle) {
+        document.body.style.backgroundColor = "var(--darkBackgroundColor)";
+        document.body.style.color = "var(--lightFontColor)";
+        button.style.backgroundColor = "var(--grayButtonColor)";
+        button.style.color = "var(--lightFontColor)";
+        noteItems.forEach(item => {
+          item.style.borderBottomColor = "var(--lightFontColor)";
+        });
+      } else {
+        document.body.style.backgroundColor = "var(--lightBackgroundColor)";
+        document.body.style.color = "var(--darkFontColor)";
+        button.style.backgroundColor = "var(--greenButtonColor)";
+        button.style.color = "var(--darkFontColor)";
+        noteItems.forEach(item => {
+          item.style.borderBottomColor = "var(--darkFontColor)";
+        });
+      }
+    });
+  };
+
+filterButton.addEventListener("click", () => {
     filterCompleted = !filterCompleted;
 
     if (filterCompleted) {
@@ -39,6 +67,12 @@ document.addEventListener("DOMContentLoaded", () => {
     renderNotes(filterCompleted);
   });
 
-  // Initial render
+  styleButton.addEventListener("click", () => {
+    isAlternativeStyle = !isAlternativeStyle;
+    applyStyles();
+  });
+
+  // Initial render and styling
   renderNotes(filterCompleted);
+  applyStyles();
 });

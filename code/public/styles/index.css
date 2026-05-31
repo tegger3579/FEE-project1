@@ -2,6 +2,23 @@
     box-sizing: border-box;
 }
 
+/* Colors for both styles */
+body {
+--lightBackgroundColor: #e5fecb;
+--darkBackgroundColor: #2d2d2d;
+
+--darkFontColor: #000000;
+--lightFontColor: #c8c6c6;
+
+--greenButtonColor: #6fd468;
+--grayButtonColor: #5c5b5b;
+}
+
+button {
+  background-color: var(--greenButtonColor);
+  border-radius: 4px;
+}
+
 body {
   display: grid;
   grid-template-areas:

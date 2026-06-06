@@ -1,17 +1,38 @@
 /* global Handlebars */
 
 const notes = [
-  { id: 1, title: "Buy groceries", text: "Milk, eggs, bread, and vegetables",
-    dueDate: "2026-06-02", completed: true, importance: 4, createDate: "2026-05-25" },
-  { id: 2, title: "Pay bill", text: "Pay the electricity bill",
-    dueDate: "2026-05-30", completed: false, importance: 5, createDate: "2026-05-26" },
-  { id: 3, title: "Call mom", text: "Schedule a video call for Sunday afternoon",
-    dueDate: "2026-06-01", completed: false, importance: 1, createDate: "2026-05-27" },
+  {
+    id: 1,
+    title: "Buy groceries",
+    text: "Milk, eggs, bread, and vegetables",
+    dueDate: "2026-06-02",
+    completed: true,
+    importance: 4,
+    createDate: "2026-05-25",
+  },
+  {
+    id: 2,
+    title: "Pay bill",
+    text: "Pay the electricity bill",
+    dueDate: "2026-05-30",
+    completed: false,
+    importance: 5,
+    createDate: "2026-05-26",
+  },
+  {
+    id: 3,
+    title: "Call mom",
+    text: "Schedule a video call for Sunday afternoon",
+    dueDate: "2026-06-01",
+    completed: false,
+    importance: 1,
+    createDate: "2026-05-27",
+  },
 ];
 
 let currentSort = {
   column: null,
-  direction: 'asc' // 'asc' or 'desc'
+  direction: "asc", // 'asc' or 'desc'
 };
 
 // Wait for DOM to be ready
@@ -21,73 +42,73 @@ document.addEventListener("DOMContentLoaded", () => {
   const noteList = document.querySelector(".note-list__ul");
 
   const renderNotes = (filterCompleted = false) => {
-    let filteredNotes = filterCompleted 
-      ? notes.filter(note => !note.completed)
+    let filteredNotes = filterCompleted
+      ? notes.filter((note) => !note.completed)
       : notes;
 
     if (currentSort.column) {
       filteredNotes = [...filteredNotes].sort((a, b) => {
         let valueA = a[currentSort.column];
         let valueB = b[currentSort.column];
-        
+
         // Handle string comparison (case-insensitive)
-        if (typeof valueA === 'string') {
+        if (typeof valueA === "string") {
           valueA = valueA.toLowerCase();
           valueB = valueB.toLowerCase();
         }
-        
+
         let comparison = 0;
         if (valueA < valueB) comparison = -1;
         if (valueA > valueB) comparison = 1;
-        
-        return currentSort.direction === 'asc' ? comparison : -comparison;
+
+        return currentSort.direction === "asc" ? comparison : -comparison;
       });
     }
-    
+
     const html = template({ notes: filteredNotes });
     noteList.innerHTML = html;
   };
 
-    const updateSortButtons = () => {
+  const updateSortButtons = () => {
     const sortButtons = [
-      { 
-        element: document.querySelector(".button-sort-name"), 
+      {
+        element: document.querySelector(".button-sort-name"),
         column: "title",
-        defaultText: "By name"
+        defaultText: "By name",
       },
-      { 
-        element: document.querySelector(".button-sort-due-date"), 
+      {
+        element: document.querySelector(".button-sort-due-date"),
         column: "dueDate",
-        defaultText: "By due date"
+        defaultText: "By due date",
       },
-      { 
-        element: document.querySelector(".button-sort-creation-date"), 
+      {
+        element: document.querySelector(".button-sort-creation-date"),
         column: "createDate",
-        defaultText: "By creation date"
+        defaultText: "By creation date",
       },
-      { 
-        element: document.querySelector(".button-sort-importance"), 
+      {
+        element: document.querySelector(".button-sort-importance"),
         column: "importance",
-        defaultText: "By importance"
-      }
+        defaultText: "By importance",
+      },
     ];
 
-    sortButtons.forEach(btn => {
+    sortButtons.forEach((btn) => {
       // Remove old arrow if exists
-      const textSpan = btn.element.querySelector('.sort-arrow');
+      const textSpan = btn.element.querySelector(".sort-arrow");
       if (textSpan) {
         textSpan.remove();
       }
-    
-    // Add arrow if this column is currently sorted
+
+      // Add arrow if this column is currently sorted
       if (currentSort.column === btn.column) {
-        const arrow = document.createElement('span');
-        arrow.className = 'sort-arrow';
-        arrow.textContent = currentSort.direction === 'asc' ? ' ↑' : ' ↓';
+        const arrow = document.createElement("span");
+        arrow.className = "sort-arrow";
+        arrow.textContent = currentSort.direction === "asc" ? " ↑" : " ↓";
         btn.element.appendChild(arrow);
-        btn.element.classList.add('button-sort-bold');
+        btn.element.classList.add("button-sort-bold");
       } else {
-        btn.element.classList.remove('button-sort-bold');
+        btn.element.classList.remove("button-sort-bold");
       }
     });
   };
@@ -101,29 +122,47 @@ document.addEventListener("DOMContentLoaded", () => {
   const applyStyles = () => {
     const buttons = document.querySelectorAll("button");
     const noteItems = document.querySelectorAll(".note-list__item");
-    
-    buttons.forEach(button => {
+    const modalContent = document.querySelector(".modal-content");
+    const modalTextElements = document.querySelectorAll(
+      ".modal-content label, .modal-content h2, .modal-content p, .modal-content span",
+    );
+
+    if (isAlternativeStyle) {
+      document.body.style.backgroundColor = "var(--darkBackgroundColor)";
+      document.body.style.color = "var(--lightFontColor)";
+      modalContent.style.backgroundColor = "var(--darkBackgroundColor)";
+      modalTextElements.forEach(
+        (el) => (el.style.color = "var(--lightFontColor)"),
+      );
+    } else {
+      document.body.style.backgroundColor = "var(--lightBackgroundColor)";
+      document.body.style.color = "var(--darkFontColor)";
+      modalContent.style.backgroundColor = "var(--lightBackgroundColor)";
+      modalTextElements.forEach(
+        (el) => (el.style.color = "var(--darkFontColor)"),
+      );
+    }
+
+    buttons.forEach((button) => {
       if (isAlternativeStyle) {
-        document.body.style.backgroundColor = "var(--darkBackgroundColor)";
-        document.body.style.color = "var(--lightFontColor)";
         button.style.backgroundColor = "var(--grayButtonColor)";
         button.style.color = "var(--lightFontColor)";
-        noteItems.forEach(item => {
-          item.style.borderBottomColor = "var(--lightFontColor)";
-        });
       } else {
-        document.body.style.backgroundColor = "var(--lightBackgroundColor)";
-        document.body.style.color = "var(--darkFontColor)";
         button.style.backgroundColor = "var(--greenButtonColor)";
         button.style.color = "var(--darkFontColor)";
-        noteItems.forEach(item => {
-          item.style.borderBottomColor = "var(--darkFontColor)";
-        });
+      }
+    });
+
+    noteItems.forEach((item) => {
+      if (isAlternativeStyle) {
+        item.style.borderBottomColor = "var(--lightFontColor)";
+      } else {
+        item.style.borderBottomColor = "var(--darkFontColor)";
       }
     });
   };
 
-filterButton.addEventListener("click", () => {
+  filterButton.addEventListener("click", () => {
     filterCompleted = !filterCompleted;
 
     if (filterCompleted) {
@@ -141,34 +180,35 @@ filterButton.addEventListener("click", () => {
   });
 
   const sortButtons = [
-    { 
-      element: document.querySelector(".button-sort-name"), 
-      column: "title" 
+    {
+      element: document.querySelector(".button-sort-name"),
+      column: "title",
     },
-    { 
-      element: document.querySelector(".button-sort-due-date"), 
-      column: "dueDate" 
+    {
+      element: document.querySelector(".button-sort-due-date"),
+      column: "dueDate",
     },
-    { 
-      element: document.querySelector(".button-sort-creation-date"), 
-      column: "createDate" 
+    {
+      element: document.querySelector(".button-sort-creation-date"),
+      column: "createDate",
     },
-    { 
-      element: document.querySelector(".button-sort-importance"), 
-      column: "importance" 
-    }
+    {
+      element: document.querySelector(".button-sort-importance"),
+      column: "importance",
+    },
   ];
 
-  sortButtons.forEach(sortBtn => {
+  sortButtons.forEach((sortBtn) => {
     sortBtn.element.addEventListener("click", () => {
       // Toggle direction if clicking the same column, otherwise switch to ascending
       if (currentSort.column === sortBtn.column) {
-        currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+        currentSort.direction =
+          currentSort.direction === "asc" ? "desc" : "asc";
       } else {
         currentSort.column = sortBtn.column;
-        currentSort.direction = 'asc';
+        currentSort.direction = "asc";
       }
-      
+
       updateSortButtons();
       renderNotes(filterCompleted);
     });
@@ -178,4 +218,48 @@ filterButton.addEventListener("click", () => {
   renderNotes(filterCompleted);
   applyStyles();
   updateSortButtons();
+
+  // Modal functionality
+  const modal = document.getElementById("note-modal");
+  const addBtn = document.querySelector(".button-add");
+  const closeBtn = document.querySelector(".modal-close");
+  const noteForm = document.getElementById("note-form");
+  const modalTitle = document.getElementById("modal-title");
+
+  addBtn.addEventListener("click", () => {
+    modal.style.display = "block";
+    modalTitle.textContent = "Add New Note";
+    noteForm.reset();
+  });
+
+  closeBtn.addEventListener("click", () => {
+    modal.style.display = "none";
+  });
+
+  // Close modal when clicking outside
+  window.addEventListener("click", (event) => {
+    if (event.target === modal) {
+      modal.style.display = "none";
+    }
+  });
+
+  // Handle form submission
+  noteForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const newNote = {
+      id: Date.now(), // Generate unique ID
+      title: document.getElementById("note-title").value,
+      text: document.getElementById("note-text").value,
+      dueDate: document.getElementById("note-due-date").value,
+      importance: parseInt(document.getElementById("note-importance").value),
+      completed: document.getElementById("note-completed").value === "true",
+      createDate: new Date().toISOString().split("T")[0],
+    };
+
+    notes.push(newNote);
+    renderNotes(filterCompleted);
+    modal.style.display = "none";
+    noteForm.reset();
+  });
 });

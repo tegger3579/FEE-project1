@@ -24,11 +24,15 @@
           </div>
           <div class="note-list__item-meta">
             <span class="note-list__item-due-date">Due: {{dueDate}}</span>
-            <span class="note-list__item-completed">Completed:
-              {{completed}}</span>
+            <label class="note-list__item-checkbox">
+              <input type="checkbox" class="note-completed-toggle"
+                data-note-id="{{id}}" {{#if completed}}checked{{/if}} disabled />
+                Completed
+            </label>
             <span class="note-list__item-importance">Importance:
               {{importance}}</span>
           </div>
+          <button class="button-edit">Edit</button>
         </li>
       {{/each}}
     </script>
@@ -62,12 +66,14 @@
               required
             />
           </div>
-          <div class="form-group">
-            <label for="note-completed">Completed:</label>
-            <select id="note-completed" name="completed">
-              <option value="false">No</option>
-              <option value="true">Yes</option>
-            </select>
+          <div class="form-group checkbox-group">
+            <label for="note-completed">
+              <input
+                type="checkbox"
+                id="note-completed"
+                name="completed"
+              />Completed
+            </label>
           </div>
           <button type="submit" class="button-save">Save Note</button>
         </form>

@@ -232,6 +232,29 @@ document.addEventListener("DOMContentLoaded", () => {
     noteForm.reset();
   });
 
+  noteList.addEventListener("click", (e) => {
+    if (e.target.classList.contains("button-edit")) {
+      const noteItem = e.target.closest(".note-list__item");
+      const noteId = parseInt(noteItem.dataset.noteId);
+      const noteToEdit = notes.find((n) => n.id === noteId);
+
+      if (noteToEdit) {
+        document.getElementById("note-title").value = noteToEdit.title;
+        document.getElementById("note-text").value = noteToEdit.text;
+        document.getElementById("note-due-date").value = noteToEdit.dueDate;
+        document.getElementById("note-importance").value =
+          noteToEdit.importance;
+        document.getElementById("note-completed").checked =
+          noteToEdit.completed;
+
+        noteForm.dataset.editingId = noteId;
+
+        modalTitle.textContent = "Edit Note";
+        modal.style.display = "block";
+      }
+    }
+  });
+
   closeBtn.addEventListener("click", () => {
     modal.style.display = "none";
   });
@@ -247,17 +270,38 @@ document.addEventListener("DOMContentLoaded", () => {
   noteForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    const newNote = {
-      id: Date.now(), // Generate unique ID
-      title: document.getElementById("note-title").value,
-      text: document.getElementById("note-text").value,
-      dueDate: document.getElementById("note-due-date").value,
-      importance: parseInt(document.getElementById("note-importance").value),
-      completed: document.getElementById("note-completed").value === "true",
-      createDate: new Date().toISOString().split("T")[0],
-    };
+    const editingId = noteForm.dataset.editingId;
 
-    notes.push(newNote);
+    if (editingId) {
+      // Edit existing note
+      const index = notes.findIndex((n) => n.id === parseInt(editingId));
+      if (index !== -1) {
+        notes[index] = {
+          ...notes[index],
+          title: document.getElementById("note-title").value,
+          text: document.getElementById("note-text").value,
+          dueDate: document.getElementById("note-due-date").value,
+          importance: parseInt(
+            document.getElementById("note-importance").value,
+          ),
+          completed: document.getElementById("note-completed").checked,
+        };
+      }
+      delete noteForm.dataset.editingId;
+    } else {
+      const newNote = {
+        id: Date.now(), // Generate unique ID
+        title: document.getElementById("note-title").value,
+        text: document.getElementById("note-text").value,
+        dueDate: document.getElementById("note-due-date").value,
+        importance: parseInt(document.getElementById("note-importance").value),
+        completed: document.getElementById("note-completed").checked,
+        createDate: new Date().toISOString().split("T")[0],
+      };
+
+      notes.push(newNote);
+    }
+
     renderNotes(filterCompleted);
     modal.style.display = "none";
     noteForm.reset();

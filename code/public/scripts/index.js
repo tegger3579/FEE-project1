@@ -1,33 +1,45 @@
 /* global Handlebars */
 
+class Note {
+  constructor(id, title, text, dueDate, completed, importance, createDate) {
+    this.id = id;
+    this.title = title;
+    this.text = text;
+    this.dueDate = dueDate;
+    this.completed = completed;
+    this.importance = importance;
+    this.createDate = createDate;
+  }
+}
+
 const notes = [
-  {
-    id: 1,
-    title: "Buy groceries",
-    text: "Milk, eggs, bread, and vegetables",
-    dueDate: "2026-06-02",
-    completed: true,
-    importance: 4,
-    createDate: "2026-05-25",
-  },
-  {
-    id: 2,
-    title: "Pay bill",
-    text: "Pay the electricity bill",
-    dueDate: "2026-05-30",
-    completed: false,
-    importance: 5,
-    createDate: "2026-05-26",
-  },
-  {
-    id: 3,
-    title: "Call mom",
-    text: "Schedule a video call for Sunday afternoon",
-    dueDate: "2026-06-01",
-    completed: false,
-    importance: 1,
-    createDate: "2026-05-27",
-  },
+  new Note(
+    1,
+    "Buy groceries",
+    "Milk, eggs, bread, and vegetables",
+    "2026-06-02",
+    true,
+    4,
+    "2026-05-25",
+  ),
+  new Note(
+    2,
+    "Pay bill",
+    "Pay the electricity bill",
+    "2026-05-30",
+    false,
+    5,
+    "2026-06-26",
+  ),
+  new Note(
+    3,
+    "Call mom",
+    "Schedule a video call for Sunday afternoon",
+    "2026-07-01",
+    false,
+    1,
+    "2026-05-27",
+  ),
 ];
 
 let currentSort = {
@@ -289,15 +301,15 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       delete noteForm.dataset.editingId;
     } else {
-      const newNote = {
-        id: Date.now(), // Generate unique ID
-        title: document.getElementById("note-title").value,
-        text: document.getElementById("note-text").value,
-        dueDate: document.getElementById("note-due-date").value,
-        importance: parseInt(document.getElementById("note-importance").value),
-        completed: document.getElementById("note-completed").checked,
-        createDate: new Date().toISOString().split("T")[0],
-      };
+      const newNote = new Note(
+        Date.now(),
+        document.getElementById("note-title").value,
+        document.getElementById("note-text").value,
+        document.getElementById("note-due-date").value,
+        document.getElementById("note-completed").checked,
+        parseInt(document.getElementById("note-importance").value),
+        new Date().toISOString().split("T")[0],
+      );
 
       notes.push(newNote);
     }

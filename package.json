@@ -7,8 +7,8 @@
     "type": "module",
     "main": "index.js",
     "scripts": {
-        "start": "node index.js",
-        "start:watch": "node --watch index.js",
+        "start": "node code/index.js",
+        "start:watch": "node --watch code/index.js",
         "lint": "eslint \"**/*.js\" \"**/*.css\"",
         "format": "prettier --write \"**/*.{js,cjs,mjs,css,html,json,md}\"",
         "format:check": "prettier --check \"**/*.{js,cjs,mjs,css,html,json,md}\""
@@ -21,6 +21,7 @@
         "prettier": "3.8.2"
     },
     "dependencies": {
-        "express": "^5.2.1"
+        "express": "^5.2.1",
+        "@seald-io/nedb": "^4.1.2"
     }
 }

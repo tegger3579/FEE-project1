@@ -1,41 +1,36 @@
 import { Note } from "../models/note.js";
+import { httpService } from "./httpService.js";
 
 export class NoteService {
   constructor() {
-    this.notes = [
-      new Note(
-        1,
-        "Buy groceries",
-        "Milk, eggs, bread, and vegetables",
-        "2026-06-02",
-        true,
-        4,
-        "2026-05-25",
-      ),
-      new Note(
-        2,
-        "Pay bill",
-        "Pay the electricity bill",
-        "2026-05-30",
-        false,
-        5,
-        "2026-06-26",
-      ),
-      new Note(
-        3,
-        "Call mom",
-        "Schedule a video call for Sunday afternoon",
-        "2026-07-01",
-        false,
-        1,
-        "2026-05-27",
-      ),
-    ];
+    this.notes = [];
 
     this.currentSort = {
       column: null,
-      direction: "asc", // 'asc' or 'desc'
+      direction: "asc",
     };
+
+    this.initPromise = this.loadNotes();
+  }
+
+  async loadNotes() {
+    try {
+      const notes = await httpService.ajax("GET", "/notes/");
+      this.notes = notes.map(
+        (note) =>
+          new Note(
+            note.id,
+            note.title,
+            note.text,
+            note.dueDate,
+            note.completed,
+            note.importance,
+            note.createDate,
+          ),
+      );
+    } catch (error) {
+      console.error("Failed to load notes:", error);
+    }
   }
 
   getNotes(filterCompleted = false) {
@@ -69,32 +64,23 @@ export class NoteService {
     return this.notes.find((n) => n.id === id);
   }
 
-  createNote(formValues) {
-    const newNote = new Note(
-      Date.now(),
-      formValues.title,
-      formValues.text,
-      formValues.dueDate,
-      formValues.completed,
-      formValues.importance,
-      new Date().toISOString().split("T")[0],
-    );
+  async saveNote(id, formValues) {
+    const noteData = {
+      id,
+      title: formValues.title,
+      text: formValues.text,
+      dueDate: formValues.dueDate,
+      completed: formValues.completed || false,
+      importance: formValues.importance || 3,
+    };
 
-    this.notes.push(newNote);
-    return newNote;
-  }
-
-  updateNote(id, formValues) {
-    const index = this.notes.findIndex((n) => n.id === id);
-    if (index !== -1) {
-      this.notes[index].title = formValues.title;
-      this.notes[index].text = formValues.text;
-      this.notes[index].dueDate = formValues.dueDate;
-      this.notes[index].importance = formValues.importance;
-      this.notes[index].completed = formValues.completed;
-      return this.notes[index];
+    try {
+      await httpService.ajax("POST", "/notes/", noteData);
+      await this.loadNotes();
+    } catch (error) {
+      console.error("Failed to save note:", error);
+      throw error;
     }
-    return null;
   }
 
   toggleSort(column) {

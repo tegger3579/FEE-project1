@@ -4,7 +4,6 @@ const router = express.Router();
 import { notesController } from "../controller/notesController.js";
 
 router.get("/", notesController.getNotes);
-router.post("/", notesController.createNote);
-router.get("/:id/", notesController.showNote);
+router.post("/", notesController.saveNote);
 
 export const noteRoutes = router;

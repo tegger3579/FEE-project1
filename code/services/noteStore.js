@@ -22,8 +22,24 @@ export class NoteStore {
     return this.db.insertAsync(note);
   }
 
-  async get(id) {
-    return this.db.findOneAsync({ id: id });
+  async update(id, noteData) {
+    const existingNote = await this.db.findOneAsync({ id: id });
+
+    if (!existingNote) {
+      throw new Error(`Note with id ${id} not found`);
+    }
+
+    const updatedNote = {
+      ...existingNote,
+      title: noteData.title ?? existingNote.title,
+      text: noteData.text ?? existingNote.text,
+      dueDate: noteData.dueDate ?? existingNote.dueDate,
+      completed: noteData.completed ?? existingNote.completed,
+      importance: noteData.importance ?? existingNote.importance,
+    };
+
+    await this.db.updateAsync({ id: id }, { $set: updatedNote });
+    return updatedNote;
   }
 
   async all() {

@@ -5,12 +5,19 @@ export class NotesController {
     res.json((await noteStore.all()) || []);
   };
 
-  createNote = async (req, res) => {
-    res.json(await noteStore.add(req.body.name));
-  };
+  saveNote = async (req, res) => {
+    const noteData = req.body;
 
-  showNote = async (req, res) => {
-    res.json(await noteStore.get(req.params.id));
+    if (noteData.id) {
+      try {
+        const updated = await noteStore.update(noteData.id, noteData);
+        res.json(updated);
+      } catch (error) {
+        res.status(404).json({ error: error.message });
+      }
+    } else {
+      res.json(await noteStore.add(noteData));
+    }
   };
 }
 

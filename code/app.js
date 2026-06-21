@@ -14,7 +14,6 @@ app.get("/", function (req, res) {
 });
 
 app.use((req, res, next) => {
-  console.log(req.auth || "no user");
   next();
 });
 app.use("/notes", noteRoutes);

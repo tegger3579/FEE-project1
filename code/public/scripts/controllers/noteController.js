@@ -12,7 +12,9 @@ export class NoteController {
     this.init();
   }
 
-  init() {
+  async init() {
+    await this.service.initPromise;
+
     this.renderNotes();
     this.view.applyStyles(this.isAlternativeStyle);
     this.view.updateSortButtons(this.service.currentSort);
@@ -100,18 +102,14 @@ export class NoteController {
     }
   }
 
-  handleFormSubmit(e) {
+  async handleFormSubmit(e) {
     e.preventDefault();
 
     const formValues = this.view.getFormValues();
 
-    if (this.editingNoteId) {
-      this.service.updateNote(this.editingNoteId, formValues);
-      this.editingNoteId = null;
-    } else {
-      this.service.createNote(formValues);
-    }
+    await this.service.saveNote(this.editingNoteId, formValues);
 
+    this.editingNoteId = null;
     this.view.hideModal();
     this.view.resetForm();
     this.renderNotes();

@@ -11,11 +11,13 @@ export class NotesController {
     if (noteData.id) {
       try {
         const updated = await noteStore.update(noteData.id, noteData);
+        res.status(200);
         res.json(updated);
       } catch (error) {
         res.status(404).json({ error: error.message });
       }
     } else {
+      res.status(201);
       res.json(await noteStore.add(noteData));
     }
   };
